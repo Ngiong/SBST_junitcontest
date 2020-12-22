@@ -24,11 +24,12 @@ public class TestUtil {
         URL[] url = new URL[required_libraries.size()];
 
         for (int index = 0; index < required_libraries.size(); index++) {
-            if (required_libraries.get(index).endsWith(".jar")) {
-                url[index] = new URL("jar:file:" + required_libraries.get(index) + "!/");
-            } else {
+//            if (required_libraries.get(index).endsWith(".jar")) {
+//              url[index] = new File(required_libraries.get(index)).toURI().toURL();
+//                url[index] = new URL("jar:file:" + required_libraries.get(index) + "!/");
+//            } else {
                 url[index] = new File(required_libraries.get(index)).toURI().toURL();
-            }
+//            }
         }
 
         //for (URL u : url){

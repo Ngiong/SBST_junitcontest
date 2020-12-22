@@ -128,6 +128,7 @@ public class RunTool {
                         // no time limit
                         channel.token("READY");
                     }
+                    printExtraClasspath(extraCP);
                     listener.endClass(cname, testcases, extraCP);
 
                     Main.info(">> >>" + testcases.getAbsolutePath());
@@ -138,11 +139,19 @@ public class RunTool {
                     Main.debug("\n\nStarting class " + cname);
                     listener.startClass(cname);
                     Main.debug("\n\nEnding class " + cname);
+                    printExtraClasspath(extraCP);
                     listener.endClass(cname, testcases, extraCP);
                     Main.debug("\n\nClass " + cname + " ended.");
                 }
             }
         }
+    }
+
+    private static void printExtraClasspath(List<File> extraCPs) {
+      Main.info("\n\n### Extra Classpaths: \n");
+      for (File cp : extraCPs) {
+        Main.info(cp.getAbsolutePath() + "\n");
+      }
     }
 
     private static class Drain implements Runnable {
