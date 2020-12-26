@@ -11,12 +11,18 @@ import org.jacoco.core.instr.Instrumenter;
 import org.jacoco.core.runtime.IRuntime;
 import org.jacoco.core.runtime.LoggerRuntime;
 import org.jacoco.core.runtime.RuntimeData;
+import org.jacoco.report.FileMultiReportOutput;
+import org.jacoco.report.IReportVisitor;
+import org.jacoco.report.MultiReportVisitor;
+import org.jacoco.report.MultiSourceFileLocator;
+import org.jacoco.report.html.HTMLFormatter;
 import org.junit.runner.Result;
 import sbst.benchmark.Main;
 import sbst.benchmark.TestSuite;
 
 import java.io.*;
 import java.net.MalformedURLException;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -205,8 +211,20 @@ public class JaCoCoLauncher {
             // Let's dump some metrics and line coverage information:
             for (final IClassCoverage cc : coverageBuilder.getClasses()) {
                 if (cc.getName().equals(targetClass)) {
-                    Main.debug("Extracted coverage data for the class " + targetClass);
-                    results = new JacocoResult(cc);
+                  Main.debug("Extracted coverage data for the class " + targetClass);
+                  results = new JacocoResult(cc);
+
+                  HTMLFormatter htmlFormatter = new HTMLFormatter();
+                  List<IReportVisitor> visitors = new ArrayList<>();
+                  File jacocoHtmlDir = new File(this.temp_folder + "/jacoco_html_dir");
+                  boolean mkdirSuccess = jacocoHtmlDir.mkdir();
+                  if (mkdirSuccess) {
+                    visitors.add(htmlFormatter.createVisitor(new FileMultiReportOutput(jacocoHtmlDir)));
+                  }
+                  MultiReportVisitor multiReportVisitor = new MultiReportVisitor(visitors);
+                  multiReportVisitor.visitInfo(sessionInfos.getInfos(), executionData.getContents());
+                  multiReportVisitor.visitBundle(coverageBuilder.getBundle("JaCoCo Coverage Report"), new MultiSourceFileLocator(4));
+                  multiReportVisitor.visitEnd();
                 }
             }
         }
