@@ -11,10 +11,7 @@ import org.jacoco.core.instr.Instrumenter;
 import org.jacoco.core.runtime.IRuntime;
 import org.jacoco.core.runtime.LoggerRuntime;
 import org.jacoco.core.runtime.RuntimeData;
-import org.jacoco.report.FileMultiReportOutput;
-import org.jacoco.report.IReportVisitor;
-import org.jacoco.report.MultiReportVisitor;
-import org.jacoco.report.MultiSourceFileLocator;
+import org.jacoco.report.*;
 import org.jacoco.report.html.HTMLFormatter;
 import org.junit.runner.Result;
 import sbst.benchmark.Main;
@@ -222,8 +219,30 @@ public class JaCoCoLauncher {
                     visitors.add(htmlFormatter.createVisitor(new FileMultiReportOutput(jacocoHtmlDir)));
                   }
                   MultiReportVisitor multiReportVisitor = new MultiReportVisitor(visitors);
+                  MultiSourceFileLocator multiSourceFileLocator = new MultiSourceFileLocator(4);
+                  multiSourceFileLocator.add(new DirectorySourceFileLocator(
+                      new File("/var/benchmarks/projects/guava/guava/src/"),
+                      null,
+                      4
+                  ));
+                  multiSourceFileLocator.add(new DirectorySourceFileLocator(
+                      new File("/var/benchmarks/projects/pdfbox/pdfbox/src/main/java/"),
+                      null,
+                      4
+                  ));
+                  multiSourceFileLocator.add(new DirectorySourceFileLocator(
+                      new File("/var/benchmarks/projects/spoon/src/main/java/"),
+                      null,
+                      4
+                  ));
+                  multiSourceFileLocator.add(new DirectorySourceFileLocator(
+                      new File("/var/benchmarks/projects/fescar/core/src/main/java/"),
+                      null,
+                      4
+                  ));
+
                   multiReportVisitor.visitInfo(sessionInfos.getInfos(), executionData.getContents());
-                  multiReportVisitor.visitBundle(coverageBuilder.getBundle("JaCoCo Coverage Report"), new MultiSourceFileLocator(4));
+                  multiReportVisitor.visitBundle(coverageBuilder.getBundle("JaCoCo Coverage Report"), multiSourceFileLocator);
                   multiReportVisitor.visitEnd();
                 }
             }
