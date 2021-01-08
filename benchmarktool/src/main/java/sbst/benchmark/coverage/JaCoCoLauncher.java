@@ -13,6 +13,7 @@ import org.jacoco.core.runtime.LoggerRuntime;
 import org.jacoco.core.runtime.RuntimeData;
 import org.jacoco.report.*;
 import org.jacoco.report.html.HTMLFormatter;
+import org.jacoco.report.xml.XMLFormatter;
 import org.junit.runner.Result;
 import sbst.benchmark.Main;
 import sbst.benchmark.TestSuite;
@@ -216,7 +217,9 @@ public class JaCoCoLauncher {
                   File jacocoHtmlDir = new File(this.temp_folder + "/jacoco_html_dir");
                   boolean mkdirSuccess = jacocoHtmlDir.mkdir();
                   if (mkdirSuccess) {
+                    File xmlFileName = new File(this.temp_folder + "/jacoco_html_dir/xml_coverage.xml");
                     visitors.add(htmlFormatter.createVisitor(new FileMultiReportOutput(jacocoHtmlDir)));
+                    visitors.add(new XMLFormatter().createVisitor(new FileOutputStream(xmlFileName)));
                   }
                   MultiReportVisitor multiReportVisitor = new MultiReportVisitor(visitors);
                   MultiSourceFileLocator multiSourceFileLocator = new MultiSourceFileLocator(4);
